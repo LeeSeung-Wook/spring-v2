@@ -1,5 +1,7 @@
 package com.example.boardv1.user;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,5 +29,16 @@ public class UserService {
 
         // 3. save()호출
         userRepository.save(user);
+    }
+
+    public User 로그인(String username, String password) {
+        User findUser = userRepository.findByUsername(username);
+        if (findUser == null)
+            throw new RuntimeException("username을 찾을 수 없어요");
+
+        if (!findUser.getPassword().equals(password)) {
+            throw new RuntimeException("패스워드가 일일치하지 않아요");
+        }
+        return findUser;
     }
 }
