@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -22,6 +23,17 @@ public class BoardRepository {
     // public BoardRepository(EntityManager em) {
     // this.em = em;
     // }
+
+    public Optional<Board> findByIdJoinUser(int id) {
+        Query query = em.createQuery("select b from Board b join fetch b.user where b.id = :id", Board.class);
+        query.setParameter("id", id);
+        try {
+            Board board = (Board) query.getSingleResult();
+            return Optional.of(board);
+        } catch (Exception e) {
+            return Optional.ofNullable(null);
+        }
+    }
 
     public Optional<Board> findById(int id) {
         Board board = em.find(Board.class, id);
