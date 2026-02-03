@@ -1,6 +1,6 @@
 package com.example.boardv1.user;
 
-import javax.management.RuntimeErrorException;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +15,9 @@ public class UserService {
     @Transactional
     public void 회원가입(String username, String password, String email) {
         // 1. 유저네임 중복체크
-        User findUser = userRepository.findByUsername(username);
-        System.out.println("-----ssar1이 없어서 findUser는 null : " + findUser);
-        if (findUser != null) {
+        Optional<User> optUser = userRepository.findByUsername(username);
+
+        if (optUser.isPresent()) {
             throw new RuntimeException("유저네임이 중복되었습니다");
         }
 
@@ -32,12 +32,11 @@ public class UserService {
     }
 
     public User 로그인(String username, String password) {
-        User findUser = userRepository.findByUsername(username);
-        if (findUser == null)
-            throw new RuntimeException("username을 찾을 수 없어요");
+        User findUser = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("username을 찾을 수 없어요"));
 
         if (!findUser.getPassword().equals(password)) {
-            throw new RuntimeException("패스워드가 일일치하지 않아요");
+            throw new RuntimeException("패스워드가 일치하지 않아요");
         }
         return findUser;
     }

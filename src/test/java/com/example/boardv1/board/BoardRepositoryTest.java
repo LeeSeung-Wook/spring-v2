@@ -43,7 +43,8 @@ public class BoardRepositoryTest {
         int id = 1;
 
         // when
-        Board board = boardRepository.findById(id);
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("아이디를 찾지 못했습니다"));
         // boardRepository.findById(1);
 
         // eye
@@ -64,19 +65,10 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    public void findAllV2_test() {
-        // given
-
-        // when
-        boardRepository.findAllV2();
-
-        // eye
-    }
-
-    @Test
     public void delete_test() {
         // given
-        Board board = boardRepository.findById(1);
+        Board board = boardRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("아이디를 찾을수 없습니다"));
 
         // when
         boardRepository.delete(board);
@@ -89,8 +81,8 @@ public class BoardRepositoryTest {
     @Test
     public void update_test() {
         // given
-        Board board = boardRepository.findById(1);
-
+        Board board = boardRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("오류"));
         // when
         board.setTitle("title1-update");
 
