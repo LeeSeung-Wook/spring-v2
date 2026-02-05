@@ -42,26 +42,20 @@
             <b>댓글리스트</b>
         </div>
         <div class="list-group">
-            <!-- 댓글아이템 -->
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="d-flex">
-                    <div class="px-1 me-1 bg-secondary text-white rounded">익명</div>
-                    <div>댓글 내용2</div>
+            {{#model.replies}}
+                <!-- 댓글아이템 -->
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex">
+                        <div class="px-1 me-1 bg-secondary text-white rounded">{{replyUsername}}</div>
+                        <div>{{comment}}</div>
+                    </div>
+                    {{#isReplyOwner}}
+                    <form action="/replies/{{id}}/delete" method="post">
+                        <button class="btn">🗑</button>
+                    </form>
+                    {{/isReplyOwner}}
                 </div>
-                <form action="/replies/1/delete" method="post">
-                    <button class="btn">🗑</button>
-                </form>
-            </div>
-            <!-- 댓글아이템 -->
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="d-flex">
-                    <div class="px-1 me-1 bg-secondary text-white rounded">익명</div>
-                    <div>댓글 내용1</div>
-                </div>
-                <form action="/replies/1/delete" method="post">
-                    <button class="btn">🗑</button>
-                </form>
-            </div>
+            {{/model.replies}}
         </div>
     </div>
 </div>

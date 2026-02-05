@@ -1,9 +1,12 @@
 package com.example.boardv1.board;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.example.boardv1.reply.Reply;
 import com.example.boardv1.user.User;
 
 import jakarta.persistence.Entity;
@@ -12,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +41,9 @@ public class Board { // user 1, board N
     // object relation mapping join으로 관계된 객체를 자동으로 만들어준다.
     @ManyToOne(fetch = FetchType.EAGER) // 디폴트로 eager이다.
     private User user;
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER) // onetomany의 디폴트는 LAZY이다.
+    private List<Reply> replies = new ArrayList<>();
 
     @CreationTimestamp
     private Timestamp createdAt;
