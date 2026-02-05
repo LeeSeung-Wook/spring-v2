@@ -1,9 +1,11 @@
 package com.example.boardv1.reply;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public class ReplyResponse {
 
+    @NoArgsConstructor
     @Data
     public static class DTO {
         private Integer id;

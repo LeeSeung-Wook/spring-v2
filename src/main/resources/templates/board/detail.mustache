@@ -28,10 +28,11 @@
         <!-- 댓글등록 -->
         <div class="card-body">
             <form action="/replies/save" method="post">
-                <textarea class="form-control" rows="2" name="comment"></textarea>
+                <input type="hidden" name="boardId" value="{{model.id}}" />
+                <textarea id="comment" class="form-control" rows="2" name="comment"></textarea>
                 <div class="d-flex justify-content-end">
                 <button class="btn btn-secondary mt-1">                        
-                        댓글등록    
+                        댓글등록
                     </button>
                 </div>
             </form>
@@ -50,7 +51,7 @@
                         <div>{{comment}}</div>
                     </div>
                     {{#isReplyOwner}}
-                    <form action="/replies/{{id}}/delete" method="post">
+                    <form action="/replies/{{id}}/delete?boardId={{model.id}}" method="post">
                         <button class="btn">🗑</button>
                     </form>
                     {{/isReplyOwner}}
@@ -59,6 +60,19 @@
         </div>
     </div>
 </div>
+{{^sessionUser}}
+<script>
+    // 1. 조건 (querySelector사용, textArea에 comment라는 id하나 추가하기)
+    const commentArea = document.querySelector("#comment");
 
+    // 2. textArea에 마우스로 클릭했을때의 이벤트 리스너가 필요해
+    commentArea.addEventListener("click", function() {
+
+        // 3. 알림창을 띄워서 로그인하세요 라고 알려준다
+        alert("로그인하세요");
+        location.href="/login-form";
+    });
+</script>
+{{/sessionUser}}
 </body>
 </html>

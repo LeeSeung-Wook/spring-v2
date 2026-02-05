@@ -57,12 +57,8 @@ public class BoardService {
         board.setContent(content);
         board.setUser(user);
 
-        System.out.println("before-persist" + board.getId());
-
         // 2. persist
         boardRepository.save(board);
-
-        System.out.println("before-persist" + board.getId());
     }
 
     @Transactional
@@ -75,5 +71,4 @@ public class BoardService {
 
         boardRepository.delete(board);
     }
-
 }
