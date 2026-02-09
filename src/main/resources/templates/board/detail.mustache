@@ -19,7 +19,12 @@
             작성자 : {{model.username}}
         </div>
         <div class="m-4 p-2">
-            {{model.content}}
+            {{#model.youtubeId}}
+            <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/{{model.youtubeId}}"
+                allowfullscreen>
+            </iframe>
+            {{/model.youtubeId}}
         </div>
     </div>
 

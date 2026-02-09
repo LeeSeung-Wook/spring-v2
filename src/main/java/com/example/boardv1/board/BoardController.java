@@ -3,15 +3,19 @@ package com.example.boardv1.board;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.boardv1._core.errors.ex.Exception401;
+import com.example.boardv1._core.errors.ex.Exception500;
 import com.example.boardv1.user.User;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -23,22 +27,22 @@ public class BoardController {
 
     // body : title=title7&content=content7 (x-www-form)
     @PostMapping("/boards/save")
-    public String save(BoardRequest.SaveOrUpdateDTO reqDTO) {
+    public String save(@Valid BoardRequest.SaveOrUpdateDTO reqDTO, Errors errors) {
         // 인증(v), 권한(x)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
         boardService.게시글쓰기(reqDTO.getTitle(), reqDTO.getContent(), sessionUser);
         return "redirect:/";
     }
 
     @PostMapping("/boards/{id}/update")
-    public String update(@PathVariable("id") int id, BoardRequest.SaveOrUpdateDTO reqDto) {
+    public String update(@PathVariable("id") int id, @Valid BoardRequest.SaveOrUpdateDTO reqDto, Errors errors) {
         // 인증(v), 권한(v)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
         boardService.게시글수정(id, reqDto.getTitle(), reqDto.getContent(), sessionUser.getId());
         return "redirect:/boards/" + id;
@@ -46,7 +50,7 @@ public class BoardController {
 
     @GetMapping("/")
     public String index(HttpServletRequest req) {
-        List<Board> list = boardService.게시글목록();
+        List<BoardResponse.ListDTO> list = boardService.게시글목록();
         req.setAttribute("models", list);
         return "index";
     }
@@ -56,7 +60,7 @@ public class BoardController {
         // 인증(v), 권한(x)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
         return "board/save-form";
     }
 
@@ -65,7 +69,7 @@ public class BoardController {
         // 인증(v), 권한(v)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
         Board board = boardService.수정폼게시글정보(id, sessionUser.getId());
         req.setAttribute("model", board);
@@ -86,9 +90,13 @@ public class BoardController {
         // 인증(v), 권한(v)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
-        boardService.게시글삭제(id, sessionUser.getId());
+        try {
+            boardService.게시글삭제(id, sessionUser.getId());
+        } catch (Exception e) {
+            throw new Exception500("댓글이 있는 게시글을 삭제할 수 없습니다");
+        }
         return "redirect:/";
     }
 

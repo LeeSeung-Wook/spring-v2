@@ -1,12 +1,14 @@
 package com.example.boardv1.user;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -24,7 +26,7 @@ public class UserController {
 
     // 조회인데, 예외로 post 요청
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO reqDto, HttpServletResponse resp) {
+    public String login(@Valid UserRequest.LoginDTO reqDto, Errors errors, HttpServletResponse resp) {
         // HttpSession session - req.getSession();
         User sessionUser = userService.로그인(reqDto.getUsername(), reqDto.getPassword());
         session.setAttribute("sessionUser", sessionUser);
@@ -37,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO reqDTO) {
+    public String join(@Valid UserRequest.JoinDTO reqDTO, Errors errors) {
         userService.회원가입(reqDTO.getUsername(), reqDTO.getPassword(), reqDTO.getEmail());
 
         return "redirect:/login-form";

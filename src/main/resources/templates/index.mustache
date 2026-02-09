@@ -12,14 +12,22 @@
     </thead>
     <tbody>
       {{#models}}
-      <tr>
+      <tr onclick="location.href='/boards/{{id}}'" style="cursor:pointer;">
         <td>{{id}}</td>
+
+        <!-- 제목: a태그 제거하고 그냥 출력 -->
+        <td>{{title}}</td>
+
+        <!-- 내용: 유튜브 제목 있으면 그거, 없으면 content -->
         <td>
-          <a href="/boards/{{id}}" style="color: inherit; text-decoration: none;">
-            {{title}}
-          </a>
+          {{#youtubeTitle}}
+            {{youtubeTitle}}
+          {{/youtubeTitle}}
+
+          {{^youtubeTitle}}
+            {{content}}
+          {{/youtubeTitle}}
         </td>
-        <td>{{content}}</td>
       </tr>
       {{/models}}
     </tbody>

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.boardv1._core.errors.ex.Exception401;
 import com.example.boardv1.user.User;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,7 +24,7 @@ public class ReplyController {
         // 인증(v), 권한(x)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
         replyService.댓글쓰기(reqDTO.getComment(), reqDTO.getBoardId(), sessionUser.getId());
         return "redirect:/boards/" + reqDTO.getBoardId();
@@ -34,7 +35,7 @@ public class ReplyController {
         // 인증(v), 권한(v)
         User sessionUser = (User) session.getAttribute("sessionUser");
         if (sessionUser == null)
-            throw new RuntimeException("인증되지 않았습니다.");
+            throw new Exception401("인증되지 않았습니다.");
 
         replyService.댓글삭제(id, sessionUser.getId());
         return "redirect:/boards/" + boardId;
